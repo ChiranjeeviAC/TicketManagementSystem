@@ -1,0 +1,143 @@
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+
+    <div>
+      <h1>Create Ticket</h1>
+      <p>Raise a new support ticket</p>
+    </div>
+
+    <button
+      type="button"
+      class="back-btn"
+      (click)="cancel()"
+    >
+      Back to Dashboard
+    </button>
+
+  </div>
+
+
+  <!-- Form Card -->
+  <div class="card">
+
+    <form (ngSubmit)="createTicket()">
+
+      <!-- Title -->
+      <div class="form-group">
+
+        <label for="title">
+          Ticket Title
+        </label>
+
+        <input
+          id="title"
+          type="text"
+          [(ngModel)]="title"
+          name="title"
+          placeholder="Enter ticket title"
+        />
+
+      </div>
+
+
+      <!-- Description -->
+      <div class="form-group">
+
+        <label for="description">
+          Description
+        </label>
+
+        <textarea
+          id="description"
+          [(ngModel)]="description"
+          name="description"
+          rows="6"
+          placeholder="Describe your issue in detail"
+        ></textarea>
+
+      </div>
+
+
+      <!-- Priority -->
+      <div class="form-group">
+
+        <label for="priority">
+          Priority
+        </label>
+
+        <select
+          id="priority"
+          [(ngModel)]="priority"
+          name="priority"
+        >
+
+          <option value="Low">
+            Low
+          </option>
+
+          <option value="Medium">
+            Medium
+          </option>
+
+          <option value="High">
+            High
+          </option>
+
+          <option value="Critical">
+            Critical
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Error Message -->
+      @if (errorMessage) {
+
+        <div class="error">
+          {{ errorMessage }}
+        </div>
+
+      }
+
+
+      <!-- Buttons -->
+      <div class="actions">
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="cancel()"
+        >
+          Cancel
+        </button>
+
+
+        <button
+          type="submit"
+          class="create-btn"
+          [disabled]="loading"
+        >
+
+          @if (loading) {
+
+            Creating...
+
+          } @else {
+
+            Create Ticket
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
