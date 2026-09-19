@@ -1,0 +1,201 @@
+<div class="page">
+
+  <div class="register-card">
+
+
+    <!-- Header -->
+
+    <div class="header">
+
+      <h1>
+        Create Account
+      </h1>
+
+      <p>
+        Register for Ticket Management System
+      </p>
+
+    </div>
+
+
+    <!-- Registration Form -->
+
+    <form
+      (ngSubmit)="register()"
+    >
+
+
+      <!-- Full Name -->
+
+      <div class="form-group">
+
+        <label for="fullName">
+          Full Name
+        </label>
+
+        <input
+          id="fullName"
+          type="text"
+          [(ngModel)]="fullName"
+          name="fullName"
+          placeholder="Enter your full name"
+        />
+
+      </div>
+
+
+      <!-- Email -->
+
+      <div class="form-group">
+
+        <label for="email">
+          Email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="Enter your email"
+        />
+
+      </div>
+
+
+      <!-- Password -->
+
+      <div class="form-group">
+
+        <label for="password">
+          Password
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Enter password"
+        />
+
+      </div>
+
+
+      <!-- Phone Number -->
+
+      <div class="form-group">
+
+        <label for="phoneNumber">
+          Phone Number
+        </label>
+
+        <input
+          id="phoneNumber"
+          type="text"
+          [(ngModel)]="phoneNumber"
+          name="phoneNumber"
+          placeholder="Enter phone number"
+        />
+
+      </div>
+
+
+      <!-- Role -->
+
+      <div class="form-group">
+
+        <label for="role">
+          Role
+        </label>
+
+        <select
+          id="role"
+          [(ngModel)]="role"
+          name="role"
+        >
+
+          <option value="Employee">
+            Employee
+          </option>
+
+          <option value="Solver">
+            Solver
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Error Message -->
+
+      @if (errorMessage) {
+
+        <div class="error">
+
+          {{ errorMessage }}
+
+        </div>
+
+      }
+
+
+      <!-- Success Message -->
+
+      @if (successMessage) {
+
+        <div class="success">
+
+          {{ successMessage }}
+
+        </div>
+
+      }
+
+
+      <!-- Register Button -->
+
+      <button
+        type="submit"
+        class="register-button"
+        [disabled]="loading"
+      >
+
+        @if (loading) {
+
+          Creating Account...
+
+        } @else {
+
+          Register
+
+        }
+
+      </button>
+
+
+    </form>
+
+
+    <!-- Login Link -->
+
+    <div class="login-link">
+
+      <span>
+        Already have an account?
+      </span>
+
+      <button
+        type="button"
+        (click)="goToLogin()"
+      >
+        Login
+      </button>
+
+    </div>
+
+
+  </div>
+
+</div>

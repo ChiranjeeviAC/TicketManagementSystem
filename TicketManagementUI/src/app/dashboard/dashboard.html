@@ -1,0 +1,214 @@
+<div class="dashboard">
+
+  <!-- HEADER -->
+
+  <header class="header">
+
+    <div class="logo">
+      <h2>Ticket Management</h2>
+    </div>
+
+    <div class="header-right">
+
+      <span>Welcome</span>
+
+      <button
+        class="logout-button"
+        (click)="logout()">
+
+        Logout
+
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- MAIN CONTENT -->
+
+  <main class="main-content">
+
+
+    <!-- PAGE TITLE -->
+
+    <div class="top-section">
+
+      <div>
+
+        <h1>My Tickets</h1>
+
+        <p>
+          View and manage your support tickets
+        </p>
+
+      </div>
+
+
+      <button
+        class="create-button"
+        (click)="createTicket()">
+
+        + Create Ticket
+
+      </button>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    @if (loading) {
+
+      <div class="message">
+
+        <p>Loading tickets...</p>
+
+      </div>
+
+    }
+
+
+    <!-- ERROR -->
+
+    @if (!loading && errorMessage) {
+
+      <div class="error-message">
+
+        <p>{{ errorMessage }}</p>
+
+        <button
+          class="retry-button"
+          (click)="loadTickets()">
+
+          Try Again
+
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- NO TICKETS -->
+
+    @if (!loading && !errorMessage && tickets.length === 0) {
+
+      <div class="empty-message">
+
+        <h3>No tickets found</h3>
+
+        <p>
+          You haven't created any tickets yet.
+        </p>
+
+        <button
+          class="create-button"
+          (click)="createTicket()">
+
+          Create Your First Ticket
+
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- TICKET LIST -->
+
+    @if (!loading && !errorMessage && tickets.length > 0) {
+
+      <div class="ticket-list">
+
+        @for (ticket of tickets; track ticket.id) {
+
+          <div class="ticket-card">
+
+
+            <!-- TICKET DETAILS -->
+
+            <div class="ticket-content">
+
+              <div class="ticket-title">
+
+                <h3>
+                  {{ ticket.title }}
+                </h3>
+
+                <span class="ticket-number">
+                  {{ ticket.ticketNumber }}
+                </span>
+
+              </div>
+
+
+              <p class="description">
+
+                {{ ticket.description }}
+
+              </p>
+
+
+              <div class="ticket-details">
+
+                <span class="detail">
+
+                  <strong>Status:</strong>
+
+                  <span class="status">
+                    {{ ticket.status }}
+                  </span>
+
+                </span>
+
+
+                <span class="detail">
+
+                  <strong>Priority:</strong>
+
+                  <span class="priority">
+                    {{ ticket.priority }}
+                  </span>
+
+                </span>
+
+
+                <span class="detail">
+
+                  <strong>Assigned:</strong>
+
+                  {{ ticket.assignedTo || 'Not Assigned' }}
+
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <!-- VIEW BUTTON -->
+
+            <div class="ticket-action">
+
+              <button
+                class="view-button"
+                (click)="openTicket(ticket.id)">
+
+                View Details
+
+              </button>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    }
+
+  </main>
+
+</div>

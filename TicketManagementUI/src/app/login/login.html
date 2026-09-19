@@ -1,0 +1,123 @@
+<div class="login-page">
+
+  <div class="login-card">
+
+
+    <!-- Header -->
+
+    <div class="login-header">
+
+      <h1>
+        Ticket Management
+      </h1>
+
+      <p>
+        Login to your account
+      </p>
+
+    </div>
+
+
+    <!-- Login Form -->
+
+    <form
+      (ngSubmit)="login()"
+    >
+
+
+      <!-- Email -->
+
+      <div class="form-group">
+
+        <label for="email">
+          Email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="Enter your email"
+        />
+
+      </div>
+
+
+      <!-- Password -->
+
+      <div class="form-group">
+
+        <label for="password">
+          Password
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Enter your password"
+        />
+
+      </div>
+
+
+      <!-- Error -->
+
+      @if (errorMessage) {
+
+        <div class="error">
+
+          {{ errorMessage }}
+
+        </div>
+
+      }
+
+
+      <!-- Login Button -->
+
+      <button
+        type="submit"
+        class="login-button"
+        [disabled]="loading"
+      >
+
+        @if (loading) {
+
+          Logging in...
+
+        } @else {
+
+          Login
+
+        }
+
+      </button>
+
+
+    </form>
+
+
+    <!-- Register -->
+
+    <div class="register-link">
+
+      <span>
+        Don't have an account?
+      </span>
+
+      <button
+        type="button"
+        (click)="goToRegister()"
+      >
+        Register
+      </button>
+
+    </div>
+
+
+  </div>
+
+</div>

@@ -1,0 +1,496 @@
+<div class="page">
+
+  <div class="header">
+
+    <div>
+      <h1>Ticket Details</h1>
+
+      <p>
+        View ticket information and activity
+      </p>
+    </div>
+
+    <button
+      class="back-button"
+      (click)="goBack()"
+    >
+      ← Back to Dashboard
+    </button>
+
+  </div>
+
+
+  @if (loading) {
+
+    <div class="message-box">
+      Loading ticket details...
+    </div>
+
+  }
+
+
+  @if (!loading && errorMessage) {
+
+    <div class="error-box">
+      {{ errorMessage }}
+    </div>
+
+  }
+
+
+  @if (!loading && ticket) {
+
+    <div class="ticket-container">
+
+
+      <!-- Ticket Information -->
+
+      <div class="card">
+
+        <div class="ticket-header">
+
+          <div>
+
+            <span class="ticket-number">
+              {{ ticket.ticketNumber }}
+            </span>
+
+            <h2>
+              {{ ticket.title }}
+            </h2>
+
+          </div>
+
+
+          <div class="badges">
+
+            <span
+              class="status-badge"
+              [ngClass]="getStatusClass(ticket.status)"
+            >
+              {{ ticket.status }}
+            </span>
+
+            <span
+              class="priority-badge"
+              [ngClass]="getPriorityClass(ticket.priority)"
+            >
+              {{ ticket.priority }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="info-grid">
+
+          <div class="info-item">
+
+            <span class="label">
+              Created By
+            </span>
+
+            <span class="value">
+              {{ ticket.createdBy || 'N/A' }}
+            </span>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Assigned To
+            </span>
+
+            <span class="value">
+              {{ ticket.assignedTo || 'Not Assigned' }}
+            </span>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Created At
+            </span>
+
+            <span class="value">
+              {{ ticket.createdAt | date:'medium' }}
+            </span>
+
+          </div>
+
+
+          <div class="info-item">
+
+            <span class="label">
+              Updated At
+            </span>
+
+            <span class="value">
+
+              @if (ticket.updatedAt) {
+                {{ ticket.updatedAt | date:'medium' }}
+              } @else {
+                Not updated
+              }
+
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="section">
+
+          <h3>
+            Description
+          </h3>
+
+          <p class="description">
+            {{ ticket.description }}
+          </p>
+
+        </div>
+
+
+        @if (ticket.resolutionNotes) {
+
+          <div class="section">
+
+            <h3>
+              Resolution Notes
+            </h3>
+
+            <p class="resolution">
+              {{ ticket.resolutionNotes }}
+            </p>
+
+          </div>
+
+        }
+
+
+        <!-- EDIT -->
+
+        @if (
+          role === 'Employee' ||
+          role === 'Solver' ||
+          role === 'Admin'
+        ) {
+
+          @if (
+            ticket.status !== 'Closed' &&
+            ticket.status !== 'Rejected'
+          ) {
+
+            <div class="action-row">
+
+              <button
+                class="edit-button"
+                (click)="editTicket()"
+              >
+                Edit Ticket
+              </button>
+
+            </div>
+
+          }
+
+        }
+
+      </div>
+
+
+      <!-- ADMIN ASSIGN -->
+
+      @if (role === 'Admin') {
+
+        <div class="card">
+
+          <h2>
+            Assign Solver
+          </h2>
+
+          <p class="help-text">
+            Enter the User ID of a Solver.
+          </p>
+
+          <div class="inline-action">
+
+            <input
+              type="number"
+              [(ngModel)]="solverId"
+              placeholder="Solver ID"
+            />
+
+            <button
+              class="primary-button"
+              (click)="assignSolver()"
+              [disabled]="actionLoading"
+            >
+              Assign
+            </button>
+
+          </div>
+
+        </div>
+
+      }
+
+
+      <!-- SOLVER / ADMIN STATUS -->
+
+      @if (
+        role === 'Solver' ||
+        role === 'Admin'
+      ) {
+
+        @if (
+          ticket.status !== 'Closed' &&
+          ticket.status !== 'Rejected'
+        ) {
+
+          <div class="card">
+
+            <h2>
+              Change Status
+            </h2>
+
+            <div class="form-group">
+
+              <label>
+                Status
+              </label>
+
+              <select
+                [(ngModel)]="selectedStatus"
+              >
+
+                <option value="Open">
+                  Open
+                </option>
+
+                <option value="InProgress">
+                  In Progress
+                </option>
+
+                <option value="Hold">
+                  Hold
+                </option>
+
+                <option value="Closed">
+                  Closed
+                </option>
+
+                <option value="Rejected">
+                  Rejected
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Resolution Notes
+              </label>
+
+              <textarea
+                rows="3"
+                [(ngModel)]="resolutionNotes"
+                placeholder="Optional resolution notes"
+              ></textarea>
+
+            </div>
+
+
+            <button
+              class="primary-button"
+              (click)="changeStatus()"
+              [disabled]="actionLoading"
+            >
+              Update Status
+            </button>
+
+          </div>
+
+        }
+
+      }
+
+
+      <!-- ACTIVITY -->
+
+      <div class="card">
+
+        <h2>
+          Activity
+        </h2>
+
+
+        <!-- Comments -->
+
+        <div class="activity-section">
+
+          <h3>
+            Comments
+          </h3>
+
+
+          @if (comments.length === 0) {
+
+            <p class="empty">
+              No comments yet.
+            </p>
+
+          }
+
+
+          @for (
+            comment of comments;
+            track $index
+          ) {
+
+            <div class="comment">
+
+              <div class="comment-header">
+
+                <strong>
+                  {{ comment.user }}
+                </strong>
+
+                <span>
+                  {{ comment.createdAt | date:'medium' }}
+                </span>
+
+              </div>
+
+              <p>
+                {{ comment.comment }}
+              </p>
+
+            </div>
+
+          }
+
+        </div>
+
+
+        <!-- Add Comment -->
+
+        <div class="add-comment">
+
+          <h3>
+            Add Comment
+          </h3>
+
+          <textarea
+            rows="4"
+            [(ngModel)]="commentText"
+            placeholder="Write your comment..."
+          ></textarea>
+
+
+          <button
+            class="primary-button"
+            (click)="addComment()"
+            [disabled]="
+              addingComment ||
+              !commentText.trim()
+            "
+          >
+
+            @if (addingComment) {
+              Adding...
+            } @else {
+              Add Comment
+            }
+
+          </button>
+
+        </div>
+
+
+        <!-- Status History -->
+
+        <div class="activity-section">
+
+          <h3>
+            Status History
+          </h3>
+
+
+          @if (statusHistory.length === 0) {
+
+            <p class="empty">
+              No status changes yet.
+            </p>
+
+          }
+
+
+          @for (
+            history of statusHistory;
+            track $index
+          ) {
+
+            <div class="history-item">
+
+              <div class="history-status">
+
+                <span>
+                  {{ history.oldStatus }}
+                </span>
+
+                <strong>
+                  →
+                </strong>
+
+                <span>
+                  {{ history.newStatus }}
+                </span>
+
+              </div>
+
+              <div class="history-info">
+
+                Changed by
+                <strong>
+                  {{ history.changedBy }}
+                </strong>
+
+                on
+
+                {{ history.changedAt | date:'medium' }}
+
+              </div>
+
+
+              @if (history.remarks) {
+
+                <div class="remarks">
+                  {{ history.remarks }}
+                </div>
+
+              }
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>
